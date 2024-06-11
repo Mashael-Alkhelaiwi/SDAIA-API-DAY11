@@ -1,12 +1,15 @@
 package org.example.helpers;
 
+import jakarta.inject.Inject;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
+import org.example.dao.EmployeeDAO;
 import org.example.dto.ErrorMessage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Base64;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -14,6 +17,8 @@ import java.util.StringTokenizer;
 @Provider
 public class AuthFilter implements ContainerRequestFilter {
 
+    @Inject
+    EmployeeDAO employeeDAO;
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         if(!requestContext.getUriInfo().getPath().contains("secures")) return;
@@ -29,6 +34,15 @@ public class AuthFilter implements ContainerRequestFilter {
 
             if (username.equals("admin") && password.equals("admin")) {
                 return;
+            }
+            try {
+                if (EmployeeDAO.selectEmployee_name(username) != null && password.equals("55")) {
+                    return;
+                }
+            } catch (SQLException e){
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
             }
         }
 

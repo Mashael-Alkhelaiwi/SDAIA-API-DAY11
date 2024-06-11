@@ -2,13 +2,14 @@ package org.example.dao;
 
 
 import org.example.models.Employees;
+import org.glassfish.jersey.process.internal.RequestScoped;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-
+@RequestScoped
 public class EmployeeDAO {
-    private static final String URL = "jdbc:sqlite:C:\\Users\\dev\\Desktop\\ExDay10\\src\\main\\java\\org\\example\\hr.db";
+    private static final String URL = "jdbc:sqlite:C:\\Users\\dev\\IdeaProjects\\Day10\\src\\main\\java\\org\\example\\hr.db";
     private static final String SELECT_ALL_EMPLOYEES = "select * from employees";
     private static final String SELECT_ONE_EMPLOYEES_JOIN_JOBS = "select * from employees join jobs on employees.job_id = jobs.jobs_id where employees_id = ?";
     private static final String SELECT_ONE_EMPLOYEE = "select * from employees where employee_id = ?";
@@ -77,10 +78,19 @@ public class EmployeeDAO {
         ResultSet rs = st.executeQuery();
         ArrayList<Employees> Employee = new ArrayList();
 
-        while(rs.next()) {
+        while (rs.next()) {
             Employee.add(new Employees(rs));
         }
 
         return Employee;
+    }
+
+    public static Employees selectEmployee_name(String name) throws SQLException, ClassNotFoundException {
+        Class.forName("org.sqlite.JDBC");
+        Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\dev\\IdeaProjects\\JavaCourse\\src\\main\\java\\Day4\\hr.db");
+        PreparedStatement st = conn.prepareStatement("select * from employees where first_name = ?");
+        st.setString(1, name);
+        ResultSet rs = st.executeQuery();
+        return rs.next() ? new Employees(rs) : null;
     }
 }
