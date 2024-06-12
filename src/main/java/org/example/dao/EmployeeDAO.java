@@ -1,8 +1,8 @@
 package org.example.dao;
 
 
+import jakarta.enterprise.context.RequestScoped;
 import org.example.models.Employees;
-import org.glassfish.jersey.process.internal.RequestScoped;
 
 import java.sql.*;
 import java.util.ArrayList;
